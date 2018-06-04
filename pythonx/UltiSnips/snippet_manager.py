@@ -728,44 +728,8 @@ class SnippetManager(object):
         """
 
         snippet_dir = ''
-        if _vim.eval("exists('g:UltiSnipsSnippetsDir')") == '1':
-            dir = _vim.eval('g:UltiSnipsSnippetsDir')
-            file = self._get_file_to_edit(dir, requested_ft, bang)
-            if file:
-                return file
-            snippet_dir = dir
-
-        if _vim.eval("exists('g:UltiSnipsSnippetDirectories')") == '1':
-            dirs = _vim.eval('g:UltiSnipsSnippetDirectories')
-            for dir in dirs:
-                file = self._get_file_to_edit(dir, requested_ft, bang)
-                if file:
-                    return file
-                if not snippet_dir:
-                    snippet_dir = dir
-
         home = _vim.eval('$HOME')
-        if platform.system() == 'Windows':
-            dir = os.path.join(home, 'vimfiles', 'UltiSnips')
-            file = self._get_file_to_edit(dir, requested_ft, bang)
-            if file:
-                return file
-            if not snippet_dir:
-                snippet_dir = dir
-
-        if _vim.eval("has('nvim')") == '1':
-            xdg_home_config = _vim.eval('$XDG_CONFIG_HOME') or os.path.join(home, ".config")
-            dir = os.path.join(xdg_home_config, 'nvim', 'UltiSnips')
-            file = self._get_file_to_edit(dir, requested_ft, bang)
-            if file:
-                return file
-            if not snippet_dir:
-                snippet_dir = dir
-
         dir = os.path.join(home, '.vim', 'UltiSnips')
-        file = self._get_file_to_edit(dir, requested_ft, bang)
-        if file:
-            return file
         if not snippet_dir:
             snippet_dir = dir
 
@@ -789,6 +753,7 @@ class SnippetManager(object):
             potentials.update(find_snippet_files(ft, snippet_dir))
             potentials.add(os.path.join(snippet_dir,
                                         ft + '.snippets'))
+            potentials.add(os.path.join('', ft + '.snippets'))
             if bang:
                 potentials.update(find_all_snippet_files(ft))
 
